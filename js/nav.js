@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
+            applyPageBranding();
             initializeNavbar();
             initializeMobileMenu();
             initializeSearchModal();
@@ -11,6 +12,45 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error loading navbar:', error));
 });
+
+function applyPageBranding() {
+    const brandLogo = document.body.dataset.brandLogo;
+    const brandAlt = document.body.dataset.brandAlt;
+
+    if (!brandLogo) return;
+
+    document
+        .querySelectorAll('img[src*="/cisco/images/cisco-gif.gif"], img[src*="/cisco/images/logo-cisco.gif"]')
+        .forEach((image) => {
+            image.src = brandLogo;
+            image.alt = brandAlt || 'Marca del producto';
+            image.className = 'h-10 w-auto object-contain';
+        });
+
+    if (brandAlt !== 'AMP') return;
+
+    const mobileLinks = document.querySelectorAll('#mobile-menu a[id^="menu"]');
+    const ampLinks = [
+        ['Lista AMP', 'https://www.ds3comunicaciones.com/AMP/index.html'],
+        ['Cable Cat 6', 'https://www.ds3comunicaciones.com/AMP/index.html#cablecat6'],
+        ['Cable Cat 6A', 'https://www.ds3comunicaciones.com/AMP/index.html#cablecat6'],
+        ['Patch Cord AMP', 'https://www.ds3comunicaciones.com/AMP/index.html'],
+        ['Conectores RJ45', 'https://www.ds3comunicaciones.com/AMP/index.html'],
+        ['Patch Panel AMP', 'https://www.ds3comunicaciones.com/AMP/index.html'],
+        ['Precios AMP', 'https://www.ds3comunicaciones.com/AMP/precios_amp.html'],
+    ];
+
+    mobileLinks.forEach((link, index) => {
+        const item = ampLinks[index];
+        if (!item) {
+            link.classList.add('hidden');
+            return;
+        }
+        link.textContent = item[0];
+        link.href = item[1];
+        link.classList.remove('hidden');
+    });
+}
 
 function initializeNavbar() {
     // Menú hamburguesa (versión simplificada que será reemplazada por initializeMobileMenu)
